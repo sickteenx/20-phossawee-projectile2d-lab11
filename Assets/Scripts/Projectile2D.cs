@@ -1,8 +1,9 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Projectile2D : MonoBehaviour
 {
-    [SerializeField] Transform shootPoint;
+    [SerializeField] Transform shootPoint; 
     [SerializeField] GameObject target;   
     [SerializeField] Rigidbody2D bulletPrefab; 
 
@@ -12,12 +13,12 @@ public class Projectile2D : MonoBehaviour
         {
             
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Debug.DrawRay(ray.origin, ray.direction * 5f, Color.red, 5f); 
+            Debug.DrawRay(ray.origin, ray.direction * 5f, Color.red, 5f);
 
-            
+           
             RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
 
-            
+           
             if (hit.collider != null)
             {
                 
@@ -26,10 +27,16 @@ public class Projectile2D : MonoBehaviour
                     target.transform.position = new Vector2(hit.point.x, hit.point.y);
                 }
                 Debug.Log("hit " + hit.collider.name);
+
+                Vector2 projectileVelocity = CalculateProjectileVelocity(shootPoint.position, hit.point, 1f);
+
+                Rigidbody2D shootBullet = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
+
+                shootBullet.linearVelocity = projectileVelocity;
+
             }
         }
     }
-
     Vector2 CalculateProjectileVelocity(Vector2 origin, Vector2 target, float time)
     {
         Vector2 distance = target - origin;
@@ -44,3 +51,4 @@ public class Projectile2D : MonoBehaviour
         return projectileVelocity;
     }
 }
+
